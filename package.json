@@ -1,0 +1,28 @@
+{
+  "name": "table-tennis-server",
+  "version": "1.0.0",
+  "description": "Backend server for Table Tennis multiplayer game",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js"
+  },
+  "keywords": [
+    "table-tennis",
+    "multiplayer",
+    "websocket",
+    "game"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.13.0",
+    "dotenv": "^16.3.1",
+    "uuid": "^9.0.0",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
