@@ -150,7 +150,7 @@ async function handleCreateRoom() {
         if (roomDisplayEl) roomDisplayEl.style.display = 'none';
 
         // Check server connectivity first
-        const serverUrl = 'https://table-tennis-server.onrender.com'; // Update with actual server URL
+        const serverUrl = 'https://table-tennis-production.up.railway.app'; // Update with actual server URL
         const matchmaking = new MatchmakingManager(serverUrl);
 
         const isServerUp = await matchmaking.checkServerConnectivity();
@@ -212,7 +212,7 @@ async function handleJoinRoom() {
     }
 
     try {
-        const serverUrl = 'https://table-tennis-server.onrender.com'; // Update with actual server URL
+        const serverUrl = 'https://table-tennis-production.up.railway.app'; // Update with actual server URL
         const matchmaking = new MatchmakingManager(serverUrl);
 
         const isServerUp = await matchmaking.checkServerConnectivity();
