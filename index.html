@@ -13,8 +13,64 @@
             <div class="menu-content">
                 <h1>Table Tennis</h1>
                 <p class="subtitle">Choose Game Mode</p>
-                <button class="btn btn-large" onclick="startTwoPlayerMode()">👥 2 Player Mode</button>
+                <button class="btn btn-large" onclick="startLocalTwoPlayerMode()">👥 Local 2 Player</button>
+                <button class="btn btn-large" onclick="startOnlineTwoPlayerMode()">🌐 Online 2 Player</button>
                 <button class="btn btn-large" onclick="startSinglePlayerMode()">🤖 Single Player (vs AI)</button>
+            </div>
+        </div>
+
+        <!-- Online Mode Selection Screen -->
+        <div id="onlineMenuScreen" class="screen">
+            <div class="menu-content">
+                <h2>Online Game</h2>
+                <p class="subtitle">Select an option</p>
+                <button class="btn btn-large" onclick="showCreateRoomScreen()">🆕 Create Room</button>
+                <button class="btn btn-large" onclick="showJoinRoomScreen()">🔗 Join Room</button>
+                <button class="btn btn-back" onclick="backToMainMenu()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Create Room Screen -->
+        <div id="createRoomScreen" class="screen">
+            <div class="menu-content">
+                <h2>Create Game Room</h2>
+                <div id="roomCodeDisplay" style="display: none;">
+                    <p class="subtitle">Share this code with your friend:</p>
+                    <div class="room-code-box">
+                        <span id="roomCode" class="room-code-text">----</span>
+                        <button class="btn btn-small" onclick="copyRoomCodeToClipboard()">📋 Copy</button>
+                    </div>
+                    <p class="waiting-text" id="waitingText">Waiting for opponent...</p>
+                    <div class="spinner"></div>
+                </div>
+                <div id="roomCreationLoading" style="display: block;">
+                    <p>Creating room...</p>
+                    <div class="spinner"></div>
+                </div>
+                <button class="btn btn-back" onclick="backToMainMenu()" style="margin-top: 20px;">← Cancel</button>
+            </div>
+        </div>
+
+        <!-- Join Room Screen -->
+        <div id="joinRoomScreen" class="screen">
+            <div class="menu-content">
+                <h2>Join Game Room</h2>
+                <p class="subtitle">Enter room code (4 characters)</p>
+                <input type="text" id="joinRoomInput" class="room-input" maxlength="4" placeholder="e.g., ABCD" onkeyup="formatRoomCodeInput(this)">
+                <p id="joinErrorMsg" class="error-msg" style="display: none;"></p>
+                <button class="btn btn-large" onclick="handleJoinRoom()" style="margin-top: 20px;">Join Room</button>
+                <button class="btn btn-back" onclick="backToMainMenu()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Waiting for Opponent Screen -->
+        <div id="waitingForOpponentScreen" class="screen">
+            <div class="menu-content">
+                <h2>Connecting to Game...</h2>
+                <p class="subtitle">Waiting for opponent to join</p>
+                <div class="spinner large"></div>
+                <p id="connectionStatus" class="waiting-text">Connecting...</p>
+                <button class="btn btn-back" onclick="cancelWaiting()">← Cancel</button>
             </div>
         </div>
 
@@ -45,6 +101,11 @@
 
         <!-- Game Screen -->
         <div id="gameScreen" class="screen">
+            <div class="connection-status">
+                <span id="connectionIndicator" class="connection-dot disconnected" title="Connection Status"></span>
+                <span id="connectionText" class="connection-text">Local Game</span>
+            </div>
+
             <div class="game-header">
                 <div class="player-info">
                     <span class="player-label">Player 1</span>
@@ -109,6 +170,10 @@
     <script src="js/ai.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/game.js"></script>
+    <!-- Network and Multiplayer Scripts -->
+    <script src="js/network.js"></script>
+    <script src="js/gamestate-sync.js"></script>
+    <script src="js/matchmaking.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -2,9 +2,14 @@
 // Define all functions globally FIRST, before DOMContentLoaded
 
 // Navigation functions
-function startTwoPlayerMode() {
+// Local vs Online Mode Selection
+function startLocalTwoPlayerMode() {
     uiManager.showDifficultyMenu('2player');
     updateDifficultyMenuForPlayer1();
+}
+
+function startOnlineTwoPlayerMode() {
+    uiManager.switchScreen('onlineMenuScreen');
 }
 
 function startSinglePlayerMode() {
@@ -117,6 +122,139 @@ function updateDifficultyMenuForAI() {
     const subtitleEl = document.getElementById('difficultySubtitle');
     titleEl.textContent = 'AI Difficulty';
     subtitleEl.textContent = 'Choose the AI opponent difficulty';
+}
+
+// Online Mode Functions
+function showCreateRoomScreen() {
+    console.log('showCreateRoomScreen called');
+    uiManager.switchScreen('createRoomScreen');
+
+    // Auto-create room
+    setTimeout(() => {
+        handleCreateRoom();
+    }, 100);
+}
+
+function showJoinRoomScreen() {
+    console.log('showJoinRoomScreen called');
+    uiManager.switchScreen('joinRoomScreen');
+    document.getElementById('joinRoomInput').focus();
+}
+
+async function handleCreateRoom() {
+    try {
+        const roomCreatingEl = document.getElementById('roomCreationLoading');
+        const roomDisplayEl = document.getElementById('roomCodeDisplay');
+
+        if (roomCreatingEl) roomCreatingEl.style.display = 'block';
+        if (roomDisplayEl) roomDisplayEl.style.display = 'none';
+
+        // Check server connectivity first
+        const serverUrl = 'https://table-tennis-server.onrender.com'; // Update with actual server URL
+        const matchmaking = new MatchmakingManager(serverUrl);
+
+        const isServerUp = await matchmaking.checkServerConnectivity();
+        if (!isServerUp) {
+            alert('⚠️ Server is currently unavailable. Please try again later.');
+            backToMainMenu();
+            return;
+        }
+
+        // Create room
+        const roomCode = await matchmaking.createRoom();
+
+        if (roomCreatingEl) roomCreatingEl.style.display = 'none';
+        if (roomDisplayEl) roomDisplayEl.style.display = 'block';
+
+        document.getElementById('roomCode').textContent = roomCode;
+
+        // Start waiting with network connection
+        startOnlineGame(roomCode, true);
+    } catch (error) {
+        console.error('Error creating room:', error);
+        alert('Failed to create room: ' + error.message);
+        backToMainMenu();
+    }
+}
+
+function copyRoomCodeToClipboard() {
+    const roomCode = document.getElementById('roomCode').textContent;
+    if (roomCode && roomCode !== '----') {
+        navigator.clipboard.writeText(roomCode).then(() => {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        });
+    }
+}
+
+function formatRoomCodeInput(input) {
+    input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    // Clear error message on input
+    const errorMsg = document.getElementById('joinErrorMsg');
+    if (errorMsg) errorMsg.style.display = 'none';
+}
+
+async function handleJoinRoom() {
+    const roomCode = document.getElementById('joinRoomInput').value.trim().toUpperCase();
+    const errorMsg = document.getElementById('joinErrorMsg');
+
+    if (!roomCode || roomCode.length !== 4) {
+        if (errorMsg) {
+            errorMsg.textContent = 'Please enter a 4-character room code';
+            errorMsg.style.display = 'block';
+        }
+        return;
+    }
+
+    try {
+        const serverUrl = 'https://table-tennis-server.onrender.com'; // Update with actual server URL
+        const matchmaking = new MatchmakingManager(serverUrl);
+
+        const isServerUp = await matchmaking.checkServerConnectivity();
+        if (!isServerUp) {
+            if (errorMsg) {
+                errorMsg.textContent = 'Server is unavailable. Please try again later.';
+                errorMsg.style.display = 'block';
+            }
+            return;
+        }
+
+        // Try to join room
+        await matchmaking.joinRoom(roomCode);
+
+        // Start online game
+        startOnlineGame(roomCode, false);
+    } catch (error) {
+        console.error('Error joining room:', error);
+        if (errorMsg) {
+            errorMsg.textContent = error.message || 'Failed to join room';
+            errorMsg.style.display = 'block';
+        }
+    }
+}
+
+function startOnlineGame(roomCode, isCreating) {
+    console.log(`[Main] Starting online game - Room: ${roomCode}, Creating: ${isCreating}`);
+
+    uiManager.switchScreen('waitingForOpponentScreen');
+    uiManager.gameState.mode = 'onlineMultiplayer';
+    uiManager.gameState.roomCode = roomCode;
+    uiManager.gameState.isCreating = isCreating;
+
+    // Will be continued in Step 4: Game State Synchronization
+}
+
+function cancelWaiting() {
+    console.log('cancelWaiting called');
+    if (gameManager && gameManager.isOnlineMode) {
+        gameManager.disconnectNetwork();
+    }
+    backToMainMenu();
 }
 
 function startGame() {
