@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Tennis Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Main Menu Screen -->
+        <div id="mainMenu" class="screen active">
+            <div class="menu-content">
+                <h1>Table Tennis</h1>
+                <p class="subtitle">Choose Game Mode</p>
+                <button class="btn btn-large" onclick="startTwoPlayerMode()">👥 2 Player Mode</button>
+                <button class="btn btn-large" onclick="startSinglePlayerMode()">🤖 Single Player (vs AI)</button>
+            </div>
+        </div>
+
+        <!-- Difficulty Selection Screen -->
+        <div id="difficultyMenu" class="screen">
+            <div class="menu-content">
+                <h2 id="difficultyTitle">Select Difficulty</h2>
+                <p id="difficultySubtitle"></p>
+
+                <div class="difficulty-container">
+                    <button class="btn btn-difficulty" onclick="selectDifficulty('easy')">
+                        <span class="difficulty-name">Easy</span>
+                        <span class="difficulty-desc">Larger paddle, slower ball</span>
+                    </button>
+                    <button class="btn btn-difficulty" onclick="selectDifficulty('medium')">
+                        <span class="difficulty-name">Medium</span>
+                        <span class="difficulty-desc">Standard gameplay</span>
+                    </button>
+                    <button class="btn btn-difficulty" onclick="selectDifficulty('hard')">
+                        <span class="difficulty-name">Hard</span>
+                        <span class="difficulty-desc">Smaller paddle, faster ball</span>
+                    </button>
+                </div>
+
+                <button class="btn btn-back" onclick="backToMainMenu()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <div class="game-header">
+                <div class="player-info">
+                    <span class="player-label">Player 1</span>
+                    <span class="difficulty-badge" id="p1DiffBadge">Medium</span>
+                </div>
+                <div class="score-display">
+                    <span id="score1" class="score">0</span>
+                    <span class="score-sep">-</span>
+                    <span id="score2" class="score">0</span>
+                </div>
+                <div class="player-info">
+                    <span class="difficulty-badge" id="p2DiffBadge">Medium</span>
+                    <span class="player-label" id="p2Label">Player 2</span>
+                </div>
+            </div>
+
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+            <div class="game-controls">
+                <div class="control-info" id="controlsInfo">
+                    <p>Player 1: Arrow Keys or A/D to move | Space: Pause | R: Reset | ESC: Menu</p>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-small" onclick="togglePause()">⏸ Pause</button>
+                    <button class="btn btn-small" onclick="resetGame()">↻ Reset</button>
+                    <button class="btn btn-small" onclick="backToMainMenu()">⊞ Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pauseScreen" class="screen">
+            <div class="menu-content">
+                <h2>Game Paused</h2>
+                <div class="pause-score">
+                    <span id="pauseScore1">0</span>
+                    <span>-</span>
+                    <span id="pauseScore2">0</span>
+                </div>
+                <button class="btn btn-large" onclick="togglePause()">Resume Game</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="screen">
+            <div class="menu-content">
+                <h2 id="winnerText">Game Over</h2>
+                <div class="final-score">
+                    <span id="finalScore1">0</span>
+                    <span>-</span>
+                    <span id="finalScore2">0</span>
+                </div>
+                <button class="btn btn-large" onclick="playAgain()">Play Again</button>
+                <button class="btn btn-large" onclick="backToMainMenu()">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/physics.js"></script>
+    <script src="js/paddle.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
